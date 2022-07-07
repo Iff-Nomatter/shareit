@@ -37,7 +37,9 @@ class UserControllerTest {
 
     static UserDto user;
     static UserDto userForDeletion;
+    static UserDto userForRequest;
     static UserDto userForCreation;
+    static UserDto userForGetAll;
     static UserDto userForDuplicateEmail;
     static UserDto updatedUser;
     static UserDto badUser;
@@ -47,30 +49,34 @@ class UserControllerTest {
     void init() {
         url = URI.create(ADDRESS + port + ENDPOINT);
         user = new UserDto(0, "Frodo", "hobbit@shire.nz");
+        userForRequest = new UserDto(0, "Gandalf", "mayar@shire.nz");
+        userForGetAll = new UserDto(0, "Aragorn", "mitrandir@pony.nz");
         userForDeletion = new UserDto(0, "Sam", "gardener@shire.kz");
         userForDuplicateEmail = new UserDto(0, "Merry", "meriadok@shire.kz");
         userForCreation = new UserDto(0, "Peregrin", "tuk@shire.kz");
-        updatedUser = new UserDto(1L, "Mr.Frodo", "hobbit@shire.nz");
+        updatedUser = new UserDto(1L, "Mr.Frodo", "");
         badUser = new UserDto(15L, "", "w00t");
     }
 
     @Test
     void getAll() {
-        template.postForObject(url, user, UserDto.class);
+        template.postForObject(url, userForGetAll, UserDto.class);
         assertThat(this.template.getForObject(url, List.class)).isNotEmpty();
     }
 
     @Test
     void getUserById() {
-        template.postForObject(url, user, UserDto.class);
-        ResponseEntity<UserDto> response = template.getForEntity(url + "/1", UserDto.class);
+        ResponseEntity<UserDto> creation = template.postForEntity(url, userForRequest, UserDto.class);
+        UserDto createdUser = creation.getBody();
+        ResponseEntity<UserDto> response = template.getForEntity(url + "/" + createdUser.getId(), UserDto.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void updateUser() {
         template.postForObject(url, user, UserDto.class);
-        ResponseEntity<UserDto> response = template.exchange(url + "/1", HttpMethod.PATCH, new HttpEntity<>(updatedUser), UserDto.class);
+        ResponseEntity<UserDto> response = template.exchange(url + "/1", HttpMethod.PATCH,
+                new HttpEntity<>(updatedUser), UserDto.class);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -85,7 +91,8 @@ class UserControllerTest {
         ResponseEntity<UserDto> response = template.postForEntity(url, userForDeletion, UserDto.class);
         UserDto responseDto = response.getBody();
         template.delete(url + "/" + responseDto.getId());
-        ResponseEntity<UserDto> notFoundResponse = template.getForEntity(url + "/" + responseDto.getId(), UserDto.class);
+        ResponseEntity<UserDto> notFoundResponse = template.getForEntity(url + "/" + responseDto.getId(),
+                UserDto.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, notFoundResponse.getStatusCode());
     }
 
