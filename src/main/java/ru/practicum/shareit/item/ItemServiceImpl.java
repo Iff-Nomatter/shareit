@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(long ownerId, ItemDto itemDto) {
         checkUserPresence(ownerId);
         Item newItem = ItemMapper.dtoToItem(itemDto);
-        newItem.setOwner(ownerId);
+        newItem.setOwner(userRepository.getUserById(ownerId));
         return ItemMapper.toItemDto(itemRepository.createItem(newItem));
     }
 
@@ -30,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(long ownerId, ItemDto itemDto, long itemId) {
         checkUserPresence(ownerId);
         Item newItem = ItemMapper.dtoToItem(itemDto);
-        newItem.setOwner(ownerId);
+        newItem.setOwner(userRepository.getUserById(ownerId));
         Item itemForUpdate = itemRepository.getItemById(itemId);
         if (newItem.getOwner() != itemForUpdate.getOwner()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Это не ваш предмет.");

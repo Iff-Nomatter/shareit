@@ -32,7 +32,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> getAllItemsByUserId(long id) {
         List<Item> itemsWithOwner = new ArrayList<>();
         for (Item item : items.values()) {
-            if (item.getOwner() == id) {
+            if (item.getOwner().getId() == id) {
                 itemsWithOwner.add(item);
             }
         }
