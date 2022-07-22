@@ -27,7 +27,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    private final LocalDateTime CURRENT_TIME = LocalDateTime.now();
+    private final LocalDateTime currentTime = LocalDateTime.now();
 
     @Override
     public BookingDtoOutput addBookingRequest(long bookerId, BookingDtoInput bookingDtoInput) {
@@ -95,15 +95,15 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndEndBeforeOrderByStartDesc(
-                                bookerId, CURRENT_TIME));
+                                bookerId, currentTime));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartAfterOrderByStartDesc(
-                                bookerId, CURRENT_TIME));
+                                bookerId, currentTime));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
-                                bookerId, CURRENT_TIME, CURRENT_TIME));
+                                bookerId, currentTime, currentTime));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStatusOrderByStartDesc(
@@ -140,15 +140,15 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndEndBeforeOrderByStartDesc(
-                                allItemsOfOwnerIds, CURRENT_TIME));
+                                allItemsOfOwnerIds, currentTime));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, CURRENT_TIME));
+                                allItemsOfOwnerIds, currentTime));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartBeforeAndEndAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, CURRENT_TIME, CURRENT_TIME));
+                                allItemsOfOwnerIds, currentTime, currentTime));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStatusOrderByStartDesc(
