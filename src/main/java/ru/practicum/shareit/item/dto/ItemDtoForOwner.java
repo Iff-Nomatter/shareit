@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
+public class ItemDtoForOwner {
     private long id;
     @NotEmpty
     private String name;
@@ -24,4 +25,14 @@ public class ItemDto {
     @NotNull
     private Boolean available;
     private List<CommentDto> comments;
+    private @Nullable Booking lastBooking;
+    private @Nullable Booking nextBooking;
+
+
+    @Getter
+    @AllArgsConstructor
+    static class Booking {
+        private long id;
+        private long bookerId;
+    }
 }
