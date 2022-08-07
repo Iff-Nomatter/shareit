@@ -24,13 +24,13 @@ public class BookingDtoOutput {
 
     @Getter
     @AllArgsConstructor
-    static class Booker {
+    public static class Booker {
         private long id;
     }
 
     @Getter
     @AllArgsConstructor
-    static class Item {
+    public static class Item {
         private long id;
         private String name;
     }

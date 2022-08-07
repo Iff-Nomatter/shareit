@@ -1,10 +1,12 @@
 package ru.practicum.shareit.requests.model;
 
 import lombok.Data;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -15,7 +17,7 @@ public class ItemRequest {
     @Id
     @SequenceGenerator(
             name = "item_request_sequence",
-            sequenceName = "items_requests_id_seq",
+            sequenceName = "item_requests_id_seq",
             allocationSize = 1
     )
     @GeneratedValue(
@@ -28,12 +30,14 @@ public class ItemRequest {
             unique = true
     )
     private long id;
+
     @Column(
             name = "description",
             nullable = false,
             columnDefinition = "TEXT"
     )
     private String description;
+
     @ManyToOne(
             fetch = FetchType.LAZY
     )
@@ -41,8 +45,16 @@ public class ItemRequest {
             name = "requester_id"
     )
     private User requestor;
+
     @Column(
             name = "created"
     )
     private LocalDateTime created;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "request"
+    )
+    private List<Item> items;
 }

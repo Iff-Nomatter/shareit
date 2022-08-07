@@ -4,6 +4,10 @@ import org.springframework.lang.Nullable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return new ItemDto(
@@ -11,8 +15,20 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                CommentMapper.toCommentDtoList(item.getComments())
+                CommentMapper.toCommentDtoList(item.getComments()),
+                item.getRequest() != null ? item.getRequest().getId() : null
         );
+    }
+
+    public static List<ItemDto> toItemDtoList(List<Item> items) {
+        List<ItemDto> itemDtos = new ArrayList<>();
+        if (items == null || items.isEmpty()) {
+            return itemDtos;
+        }
+        for (Item item : items) {
+            itemDtos.add(ItemMapper.toItemDto(item));
+        }
+        return itemDtos;
     }
 
     public static ItemDtoForOwner toOwnerItemDto(Item item,
@@ -29,7 +45,8 @@ public class ItemMapper {
                         : null,
                 nextBooking != null
                         ? new ItemDtoForOwner.Booking(nextBooking.getId(), nextBooking.getBooker().getId())
-                        : null
+                        : null,
+                item.getRequest() != null ? item.getRequest().getId() : null
         );
     }
 
