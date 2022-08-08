@@ -1,8 +1,11 @@
 package ru.practicum.shareit.booking.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +14,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.repository.BookingRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -23,21 +25,18 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
 
+    @InjectMocks
     private BookingServiceImpl bookingService;
+
+    @Mock
     private UserRepository mockUserRepository;
+    @Mock
     private ItemRepository mockItemRepository;
+    @Mock
     private BookingRepository mockBookingRepository;
-
-    @BeforeEach
-    void init() {
-        mockUserRepository = Mockito.mock(UserRepository.class);
-        mockItemRepository = Mockito.mock(ItemRepository.class);
-        mockBookingRepository = Mockito.mock(BookingRepository.class);
-
-        bookingService = new BookingServiceImpl(mockBookingRepository, mockUserRepository, mockItemRepository);
-    }
 
     @Test
     void addBookingRequest() {
@@ -53,7 +52,6 @@ class BookingServiceImplTest {
         User booker = new User();
         booker.setId(2);
 
-        Mockito.when(mockUserRepository.findById(Mockito.eq(1L))).thenReturn(Optional.of(owner));
         Mockito.when(mockUserRepository.findById(Mockito.eq(2L))).thenReturn(Optional.of(booker));
         Mockito.when(mockItemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
 
@@ -99,7 +97,6 @@ class BookingServiceImplTest {
         User booker = new User();
         booker.setId(2);
 
-        Mockito.when(mockUserRepository.findById(Mockito.eq(1L))).thenReturn(Optional.of(owner));
         Mockito.when(mockUserRepository.findById(Mockito.eq(2L))).thenReturn(Optional.of(booker));
         Mockito.when(mockItemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
 
@@ -313,7 +310,6 @@ class BookingServiceImplTest {
 
         Mockito.when(mockUserRepository.findById(Mockito.eq(1L))).thenReturn(Optional.of(owner));
         Mockito.when(mockUserRepository.findById(Mockito.eq(2L))).thenReturn(Optional.of(booker));
-        Mockito.when(mockUserRepository.findById(Mockito.eq(3L))).thenReturn(Optional.of(new User()));
         Mockito.when(mockBookingRepository.findById(Mockito.eq(1L))).thenReturn(Optional.of(booking));
 
         assertThrows(ResponseStatusException.class,

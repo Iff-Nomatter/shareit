@@ -1,8 +1,11 @@
 package ru.practicum.shareit.user.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,16 +19,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
+    @Mock
     private UserRepository mockUserRepository;
+    @InjectMocks
     private UserServiceImpl userService;
-
-    @BeforeEach
-    void init() {
-        mockUserRepository = Mockito.mock(UserRepository.class);
-        userService = new UserServiceImpl(mockUserRepository);
-    }
 
     @Test
     void createUser() {

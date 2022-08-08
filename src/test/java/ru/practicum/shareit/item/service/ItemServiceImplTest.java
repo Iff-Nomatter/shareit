@@ -1,8 +1,11 @@
 package ru.practicum.shareit.item.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,29 +30,21 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
 
+    @Mock
     private UserRepository mockUserRepository;
+    @Mock
     private ItemRepository mockItemRepository;
+    @Mock
     private BookingRepository mockBookingRepository;
+    @Mock
     private CommentRepository mockCommentRepository;
+    @Mock
     private ItemRequestRepository mockItemRequestRepository;
+    @InjectMocks
     private ItemServiceImpl itemService;
-
-
-    @BeforeEach
-    void init() {
-        mockUserRepository = Mockito.mock(UserRepository.class);
-        mockItemRepository = Mockito.mock(ItemRepository.class);
-        mockBookingRepository = Mockito.mock(BookingRepository.class);
-        mockCommentRepository = Mockito.mock(CommentRepository.class);
-        mockItemRequestRepository = Mockito.mock(ItemRequestRepository.class);
-        itemService = new ItemServiceImpl(mockItemRepository,
-                mockUserRepository,
-                mockBookingRepository,
-                mockCommentRepository,
-                mockItemRequestRepository);
-    }
 
     @Test
     void createItem() {
