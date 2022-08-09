@@ -12,7 +12,6 @@ import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,13 +55,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getAllItemRequests(Integer from, Integer size) {
-        if (from == null || size == null) {
-            return Collections.emptyList();
-        }
-        if (from < 0 || size < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Параметр не может быть отрицательным");
-        }
         List<ItemRequest> allItemRequests =
                         itemRequestRepository.findAll(PageRequest.of(from, size))
                                 .stream().collect(Collectors.toList());

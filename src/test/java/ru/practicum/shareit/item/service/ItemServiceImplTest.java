@@ -175,18 +175,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getAllItemsByUserIdEmptyPaging() {
-        List<ItemDtoForOwner> items = itemService.getAllItemsByUserId(1L, null, null);
-        assertTrue(items.isEmpty());
-    }
-
-    @Test
-    void getAllItemsByUserIdInvalidPaging() {
-        assertThrows(ResponseStatusException.class,
-                () -> itemService.getAllItemsByUserId(1L, -1, -1));
-    }
-
-    @Test
     void searchItem() {
         Item itemOne = new Item();
         itemOne.setId(1);
@@ -213,18 +201,6 @@ class ItemServiceImplTest {
     void searchItemEmptyRequest() {
         List<ItemDto> items = itemService.searchItem("", 0, 5);
         assertTrue(items.isEmpty());
-    }
-
-    @Test
-    void searchItemEmptyPaging() {
-        List<ItemDto> items = itemService.searchItem("", null, null);
-        assertTrue(items.isEmpty());
-    }
-
-    @Test
-    void searchItemInvalidPaging() {
-        assertThrows(ResponseStatusException.class,
-                () -> itemService.searchItem("", -1, -1));
     }
 
     @Test

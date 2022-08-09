@@ -161,16 +161,4 @@ class ItemRequestServiceImplTest {
         List<ItemRequestDto> result = itemRequestService.getAllItemRequests(0, 5);
         assertEquals(2, result.size());
     }
-
-    @Test
-    void getAllItemsByUserIdEmptyPaging() {
-        List<ItemRequestDto> result = itemRequestService.getAllItemRequests(null, null);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void getAllItemsByUserIdInvalidPaging() {
-        assertThrows(ResponseStatusException.class,
-                () -> itemRequestService.getAllItemRequests(-1, -1));
-    }
 }

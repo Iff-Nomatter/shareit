@@ -387,15 +387,4 @@ class BookingServiceImplTest {
                         Mockito.eq(booker.getId()), Mockito.eq(BookingStatus.REJECTED), Mockito.any(PageRequest.class));
     }
 
-    @Test
-    void getAllBookingsOfUserNullPages() {
-        List<BookingDtoOutput> result = bookingService.getAllBookingsOfUser(1L, BookingStatus.ALL, null, null);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void getAllBookingsOfUserWrongPages() {
-        assertThrows(ResponseStatusException.class,
-                () -> bookingService.getAllBookingsOfUser(1L, BookingStatus.ALL, -1, -1));
-    }
 }

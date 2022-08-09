@@ -8,6 +8,8 @@ import ru.practicum.shareit.requests.service.ItemRequestService;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -43,8 +45,8 @@ public class ItemRequestController {
     @GetMapping(value = "/all")
     public List<ItemRequestDto> getAllItemRequestsPagitaned(
             @NotEmpty @RequestHeader(USER_ID_HEADER) Long userId,
-            @RequestParam(required = false, value = "from") Integer from,
-            @RequestParam(required = false, value = "size") Integer size
+            @PositiveOrZero @RequestParam(required = false, value = "from") Integer from,
+            @Positive @RequestParam(required = false, value = "size") Integer size
     ) {
         return itemRequestService.getAllItemRequests(from, size);
     }

@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
@@ -46,8 +48,8 @@ public class BookingController {
     public List<BookingDtoOutput> getAllBookingOfUser(@RequestParam(name = "state", defaultValue = "ALL")
                                                       BookingStatus state,
                                                       @RequestHeader(USER_ID_HEADER) long requesterId,
-                                                      @RequestParam(required = false, value = "from") Integer from,
-                                                      @RequestParam(required = false, value = "size") Integer size) {
+                                                      @PositiveOrZero @RequestParam(required = false, value = "from") Integer from,
+                                                      @Positive @RequestParam(required = false, value = "size") Integer size) {
         return bookingService.getAllBookingsOfUser(requesterId, state, from, size);
     }
 
@@ -55,8 +57,8 @@ public class BookingController {
     public List<BookingDtoOutput> getAllItemBookingsOfUser(@RequestParam(name = "state", defaultValue = "ALL")
                                                            BookingStatus state,
                                                            @RequestHeader(USER_ID_HEADER) long ownerId,
-                                                           @RequestParam(required = false, value = "from") Integer from,
-                                                           @RequestParam(required = false, value = "size") Integer size) {
+                                                           @PositiveOrZero @RequestParam(required = false, value = "from") Integer from,
+                                                           @Positive @RequestParam(required = false, value = "size") Integer size) {
         return bookingService.getAllItemBookingsOfUser(ownerId, state, from, size);
     }
 }

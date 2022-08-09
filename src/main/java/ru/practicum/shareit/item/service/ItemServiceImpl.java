@@ -20,7 +20,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -92,13 +91,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoForOwner> getAllItemsByUserId(long id, Integer from, Integer size) {
-        if (from == null || size == null) {
-            return Collections.emptyList();
-        }
-        if (from < 0 || size < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Параметр не может быть отрицательным");
-        }
         List<Item> allItemsByOwnerId =
                 new ArrayList<>(itemRepository.findItemsByOwnerId(id, PageRequest.of(from, size)));
         List<ItemDtoForOwner> allItemsDtoByOwnerId = new ArrayList<>();
@@ -112,13 +104,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItem(String request, Integer from, Integer size) {
-        if (from == null || size == null) {
-            return Collections.emptyList();
-        }
-        if (from < 0 || size < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Параметр не может быть отрицательным");
-        }
         List<ItemDto> resultDto = new ArrayList<>();
         if (request.isBlank()) {
             return resultDto;

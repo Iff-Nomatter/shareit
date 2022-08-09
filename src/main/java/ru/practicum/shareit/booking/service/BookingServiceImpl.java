@@ -18,7 +18,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -89,14 +88,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDtoOutput> getAllBookingsOfUser(long bookerId, BookingStatus status,
                                                        Integer from, Integer size) {
-        if (from == null || size == null) {
-            return Collections.emptyList();
-        }
-        if (from < 0 || size < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Параметр не может быть отрицательным");
-        }
-
         getUserOrThrow(bookerId);
 
         switch (status) {
@@ -132,14 +123,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDtoOutput> getAllItemBookingsOfUser(long ownerId, BookingStatus status,
                                                            Integer from, Integer size) {
-        if (from == null || size == null) {
-            return Collections.emptyList();
-        }
-        if (from < 0 || size < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Параметр не может быть отрицательным");
-        }
-
         getUserOrThrow(ownerId);
 
         List<Item> allItemsOfOwner = new ArrayList<>(itemRepository.findItemsByOwnerId(ownerId));
