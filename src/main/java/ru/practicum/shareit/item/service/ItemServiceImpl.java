@@ -1,17 +1,20 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.requests.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -26,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
 
     @Override
@@ -34,6 +38,12 @@ public class ItemServiceImpl implements ItemService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Отсутствует пользователь с id: " + ownerId));
         Item item = ItemMapper.dtoToItem(itemDto);
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Отсутствует запрос с id: " + itemDto.getRequestId()));
+            item.setRequest(itemRequest);
+        }
         item.setOwner(user);
         itemRepository.save(item);
         return ItemMapper.toItemDto(item);
@@ -80,8 +90,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoForOwner> getAllItemsByUserId(long id) {
-        List<Item> allItemsByOwnerId = itemRepository.findItemsByOwnerId(id);
+    public List<ItemDtoForOwner> getAllItemsByUserId(long id, Integer from, Integer size) {
+        List<Item> allItemsByOwnerId =
+                new ArrayList<>(itemRepository.findItemsByOwnerId(id, PageRequest.of(from, size)));
         List<ItemDtoForOwner> allItemsDtoByOwnerId = new ArrayList<>();
         for (Item item : allItemsByOwnerId) {
             allItemsDtoByOwnerId.add(ItemMapper.toOwnerItemDto(item,
@@ -92,12 +103,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItem(String request) {
+    public List<ItemDto> searchItem(String request, Integer from, Integer size) {
         List<ItemDto> resultDto = new ArrayList<>();
         if (request.isBlank()) {
             return resultDto;
         }
-        List<Item> result = itemRepository.searchByNameAndDescriptionAndAvailable(request);
+        List<Item> result = itemRepository.searchByNameAndDescriptionAndAvailable(request, PageRequest.of(from, size));
         for (Item item : result) {
             resultDto.add(ItemMapper.toItemDto(item));
         }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,7 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.repository.BookingRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -85,33 +86,34 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOutput> getAllBookingsOfUser(long bookerId, BookingStatus status) {
+    public List<BookingDtoOutput> getAllBookingsOfUser(long bookerId, BookingStatus status,
+                                                       Integer from, Integer size) {
         getUserOrThrow(bookerId);
 
         switch (status) {
             case ALL:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
-                        .findBookingsByBookerIdOrderByStartDesc(bookerId));
+                        .findBookingsByBookerIdOrderByStartDesc(bookerId, PageRequest.of(from, size)));
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndEndBeforeOrderByStartDesc(
-                                bookerId, currentTime));
+                                bookerId, currentTime, PageRequest.of(from, size)));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartAfterOrderByStartDesc(
-                                bookerId, currentTime));
+                                bookerId, currentTime, PageRequest.of(from, size)));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
-                                bookerId, currentTime, currentTime));
+                                bookerId, currentTime, currentTime, PageRequest.of(from, size)));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStatusOrderByStartDesc(
-                                bookerId, BookingStatus.WAITING));
+                                bookerId, BookingStatus.WAITING, PageRequest.of(from, size)));
             case REJECTED:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStatusOrderByStartDesc(
-                                bookerId, BookingStatus.REJECTED));
+                                bookerId, BookingStatus.REJECTED, PageRequest.of(from, size)));
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Что-то пошло не так.");
@@ -119,7 +121,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoOutput> getAllItemBookingsOfUser(long ownerId, BookingStatus status) {
+    public List<BookingDtoOutput> getAllItemBookingsOfUser(long ownerId, BookingStatus status,
+                                                           Integer from, Integer size) {
         getUserOrThrow(ownerId);
 
         List<Item> allItemsOfOwner = new ArrayList<>(itemRepository.findItemsByOwnerId(ownerId));
@@ -136,27 +139,27 @@ public class BookingServiceImpl implements BookingService {
             case ALL:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInOrderByStartDesc(
-                                allItemsOfOwnerIds));
+                                allItemsOfOwnerIds, PageRequest.of(from, size)));
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndEndBeforeOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime));
+                                allItemsOfOwnerIds, currentTime, PageRequest.of(from, size)));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime));
+                                allItemsOfOwnerIds, currentTime, PageRequest.of(from, size)));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartBeforeAndEndAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime, currentTime));
+                                allItemsOfOwnerIds, currentTime, currentTime, PageRequest.of(from, size)));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStatusOrderByStartDesc(
-                                allItemsOfOwnerIds, BookingStatus.WAITING));
+                                allItemsOfOwnerIds, BookingStatus.WAITING, PageRequest.of(from, size)));
             case REJECTED:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStatusOrderByStartDesc(
-                                allItemsOfOwnerIds, BookingStatus.REJECTED));
+                                allItemsOfOwnerIds, BookingStatus.REJECTED, PageRequest.of(from, size)));
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Что-то пошло не так.");

@@ -27,11 +27,12 @@ public class ItemDtoForOwner {
     private List<CommentDto> comments;
     private @Nullable Booking lastBooking;
     private @Nullable Booking nextBooking;
+    private Long requestId;
 
 
     @Getter
     @AllArgsConstructor
-    static class Booking {
+    public static class Booking {
         private long id;
         private long bookerId;
     }
