@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
@@ -30,11 +31,40 @@ public class BookingClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", userId, parameters);
+        return get(UriComponentsBuilder.fromPath("")
+                .queryParam("state", "{state}")
+                .queryParam("from", "{from}")
+                .queryParam("size", "{size}")
+                .encode()
+                .toUriString(), userId, parameters);
+    }
+
+    public Object getBookingsOfOwner(long userId, BookingState state, Integer from, Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "state", state.name(),
+                "from", from,
+                "size", size
+        );
+        return get(UriComponentsBuilder.fromPath("/owner")
+                .queryParam("state", "{state}")
+                .queryParam("from", "{from}")
+                .queryParam("size", "{size}")
+                .encode()
+                .toUriString(), userId, parameters);
     }
 
     public Object bookItem(long userId, BookItemRequestDto requestDto) {
         return post("", userId, requestDto);
+    }
+
+    public Object updateBooking(long userId, long bookingId, Boolean isApproved) {
+        Map<String, Object> parameters = Map.of(
+                "approved", String.valueOf(isApproved)
+        );
+        return post(UriComponentsBuilder.fromPath("/" + bookingId)
+                .queryParam("approved", "{approved}")
+                .encode()
+                .toUriString(), userId, parameters, null);
     }
 
     public Object getBooking(long userId, Long bookingId) {
