@@ -26,8 +26,8 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public Object getItem(long itemId) {
-        return get("/" + itemId, itemId);
+    public Object getItem(long userId, long itemId) {
+        return get("/" + itemId, userId);
     }
 
     public Object getAllItemsByUserId(long userId, Integer from, Integer size) {

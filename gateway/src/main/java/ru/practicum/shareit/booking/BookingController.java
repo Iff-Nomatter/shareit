@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
@@ -10,9 +11,9 @@ import ru.practicum.shareit.booking.dto.BookingState;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +30,7 @@ public class BookingController {
 							  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		BookingState state = BookingState
 				.from(stateParam)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+				.orElseThrow(() -> new IllegalStateException("Unknown state: " + stateParam));
 		log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
 		return bookingClient.getBookings(userId, state, from, size);
 	}
@@ -62,7 +63,7 @@ public class BookingController {
 							  @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 		BookingState state = BookingState
 				.from(stateParam)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+				.orElseThrow(() -> new IllegalStateException("Unknown state: " + stateParam));
 		log.info("Get booking of userId={}, with state {}, from={}, size={}", userId, stateParam, from, size);
 		return bookingClient.getBookingsOfOwner(userId, state, from, size);
 	}

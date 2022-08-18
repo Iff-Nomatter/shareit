@@ -11,7 +11,7 @@ public interface ItemService {
 
     ItemDto updateItem(long ownerId, ItemDto itemDto, long itemId);
 
-    ItemDtoForOwner getItemById(long id, long requesterId);
+    ItemDtoForOwner getItemById(long userId, long itemId);
 
     List<ItemDtoForOwner> getAllItemsByUserId(long id, Integer from, Integer size);
 

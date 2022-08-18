@@ -20,7 +20,11 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -76,11 +80,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoForOwner getItemById(long id, long requestorId) {
-        Item item = itemRepository.findById(id).orElseThrow(() ->
+    public ItemDtoForOwner getItemById(long userId, long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Отсутствует предмет с id: " + id));
-        if (requestorId == item.getOwner().getId()) {
+                        "Отсутствует предмет с id: " + itemId));
+        if (userId == item.getOwner().getId()) {
             return ItemMapper.toOwnerItemDto(item,
                     bookingRepository.findFirstBookingByItemIdAndEndBeforeOrderByStartAsc(item.getId(), LocalDateTime.now()),
                     bookingRepository.findFirstBookingByItemIdAndStartAfterOrderByStartAsc(item.getId(), LocalDateTime.now()));
@@ -99,6 +103,13 @@ public class ItemServiceImpl implements ItemService {
                     bookingRepository.findFirstBookingByItemIdAndEndBeforeOrderByStartAsc(item.getId(), LocalDateTime.now()),
                     bookingRepository.findFirstBookingByItemIdAndStartAfterOrderByStartAsc(item.getId(), LocalDateTime.now())));
         }
+        allItemsDtoByOwnerId.sort((o1, o2) -> {
+            if (o1.getNextBooking() == null)
+                return o2.getNextBooking() == null ? 0 : 1;
+            if (o2.getNextBooking() == null)
+                return -1;
+            return o2.getNextBooking().getStartDate().compareTo(o1.getNextBooking().getStartDate());
+        });
         return allItemsDtoByOwnerId;
     }
 
@@ -127,10 +138,6 @@ public class ItemServiceImpl implements ItemService {
         if (booking == null || booking.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Вы эту вещь не бронировали.");
-        }
-        if (commentDto.getText().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Комментарий не может быть пустым.");
         }
         Comment comment = CommentMapper.dtoToComment(commentDto, user, item);
         commentRepository.save(comment);

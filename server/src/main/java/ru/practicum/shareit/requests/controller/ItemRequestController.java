@@ -43,6 +43,6 @@ public class ItemRequestController {
             @RequestParam(required = false, value = "from") Integer from,
             @RequestParam(required = false, value = "size") Integer size
     ) {
-        return itemRequestService.getAllItemRequests(from, size);
+        return itemRequestService.getAllItemRequests(userId, from, size);
     }
 }

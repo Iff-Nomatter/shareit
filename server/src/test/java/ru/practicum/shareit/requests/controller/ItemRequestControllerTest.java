@@ -90,7 +90,7 @@ class ItemRequestControllerTest {
         itemRequestDto.setDescription("description");
         Long requesterId = 111L;
 
-        Mockito.when(itemRequestService.getAllItemRequests(Mockito.anyInt(), Mockito.anyInt()))
+        Mockito.when(itemRequestService.getAllItemRequests(Mockito.anyLong(),  Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(Collections.singletonList(itemRequestDto));
 
         mvc.perform(get("/requests/all?from=0&size=5")

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -28,5 +29,6 @@ public class ItemDtoForOwner {
     public static class Booking {
         private long id;
         private long bookerId;
+        private LocalDateTime startDate;
     }
 }

@@ -40,10 +40,10 @@ public class ItemMapper {
                 item.getAvailable(),
                 CommentMapper.toCommentDtoList(item.getComments()),
                 lastBooking != null
-                        ? new ItemDtoForOwner.Booking(lastBooking.getId(), lastBooking.getBooker().getId())
+                        ? new ItemDtoForOwner.Booking(lastBooking.getId(), lastBooking.getBooker().getId(), lastBooking.getStart())
                         : null,
                 nextBooking != null
-                        ? new ItemDtoForOwner.Booking(nextBooking.getId(), nextBooking.getBooker().getId())
+                        ? new ItemDtoForOwner.Booking(nextBooking.getId(), nextBooking.getBooker().getId(), nextBooking.getStart())
                         : null,
                 item.getRequest() != null ? item.getRequest().getId() : null
         );

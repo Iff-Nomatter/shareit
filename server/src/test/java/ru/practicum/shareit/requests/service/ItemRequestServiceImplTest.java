@@ -140,7 +140,7 @@ class ItemRequestServiceImplTest {
                 Mockito.any(PageRequest.class))
         ).thenReturn(page);
 
-        List<ItemRequestDto> result = itemRequestService.getAllItemRequests(0, 5);
+        List<ItemRequestDto> result = itemRequestService.getAllItemRequests(2,0, 5);
         assertEquals(2, result.size());
     }
 }

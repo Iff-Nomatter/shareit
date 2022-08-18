@@ -3,13 +3,16 @@ package ru.practicum.shareit.booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -54,6 +57,11 @@ public class BookingClient extends BaseClient {
     }
 
     public Object bookItem(long userId, BookItemRequestDto requestDto) {
+        if (requestDto.getStart().isAfter(requestDto.getEnd()) ||
+                requestDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Время аренды не укладывается в реалистичные рамки.");
+        }
         return post("", userId, requestDto);
     }
 

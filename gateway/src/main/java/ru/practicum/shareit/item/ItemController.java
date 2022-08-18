@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -12,7 +13,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-@RestController
+@Controller
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
 @Slf4j
@@ -35,7 +36,7 @@ public class ItemController {
     public Object getItem(@RequestHeader(USER_ID_HEADER) long userHeaderId,
                           @PathVariable Long itemId) {
         log.info("Get item {}, userId={}", itemId, userHeaderId);
-        return itemClient.getItem(itemId);
+        return itemClient.getItem(userHeaderId, itemId);
     }
 
     @PatchMapping("/{itemId}")

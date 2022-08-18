@@ -28,15 +28,9 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    private final LocalDateTime currentTime = LocalDateTime.now();
 
     @Override
     public BookingDtoOutput addBookingRequest(long bookerId, BookingDtoInput bookingDtoInput) {
-        if (bookingDtoInput.getStart().isAfter(bookingDtoInput.getEnd()) ||
-                bookingDtoInput.getStart().isBefore(LocalDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Время аренды не укладывается в реалистичные рамки.");
-        }
         User user = getUserOrThrow(bookerId);
         Item item = getItemOrThrow(bookingDtoInput.getItemId());
         if (!item.getAvailable()) {
@@ -97,15 +91,15 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndEndBeforeOrderByStartDesc(
-                                bookerId, currentTime, PageRequest.of(from/size, size)));
+                                bookerId, LocalDateTime.now(), PageRequest.of(from/size, size)));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartAfterOrderByStartDesc(
-                                bookerId, currentTime, PageRequest.of(from/size, size)));
+                                bookerId, LocalDateTime.now(), PageRequest.of(from/size, size)));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
-                                bookerId, currentTime, currentTime, PageRequest.of(from/size, size)));
+                                bookerId, LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(from/size, size)));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByBookerIdAndStatusOrderByStartDesc(
@@ -143,15 +137,15 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndEndBeforeOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime, PageRequest.of(from/size, size)));
+                                allItemsOfOwnerIds, LocalDateTime.now(), PageRequest.of(from/size, size)));
             case FUTURE:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime, PageRequest.of(from/size, size)));
+                                allItemsOfOwnerIds, LocalDateTime.now(), PageRequest.of(from/size, size)));
             case CURRENT:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStartBeforeAndEndAfterOrderByStartDesc(
-                                allItemsOfOwnerIds, currentTime, currentTime, PageRequest.of(from/size, size)));
+                                allItemsOfOwnerIds, LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(from/size, size)));
             case WAITING:
                 return BookingMapper.convertBookingToDtoOutput(bookingRepository
                         .findBookingsByItemIdInAndStatusOrderByStartDesc(
