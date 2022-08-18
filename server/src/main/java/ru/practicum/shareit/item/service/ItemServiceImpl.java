@@ -101,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
         }
         allItemsDtoByOwnerId.sort((o1, o2) -> {
             if (o1.getNextBooking() == null)
-                return o2.getNextBooking() == null ? 0 : 1;
+                return o2.getNextBooking() == null ? Long.compare(o1.getId(), o2.getId()) : 1;
             if (o2.getNextBooking() == null)
                 return -1;
             return o2.getNextBooking().getStartDate().compareTo(o1.getNextBooking().getStartDate());
