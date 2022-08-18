@@ -92,7 +92,7 @@ class ItemControllerTest {
         itemDto.setName("name");
         itemDto.setDescription("description");
         itemDto.setAvailable(true);
-        Long userId = 111L;
+        Long userId = 1L;
         Mockito.when(itemService.getItemById(eq(itemDto.getId()), eq(userId))).thenReturn(itemDto);
 
         mvc.perform(

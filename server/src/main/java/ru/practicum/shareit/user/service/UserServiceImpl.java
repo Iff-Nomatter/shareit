@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers(Integer from, Integer size) {
-        Page<User> allUsersPage = repository.findAll(PageRequest.of(from/size, size));
+        Page<User> allUsersPage = repository.findAll(PageRequest.of(from / size, size));
         List<User> allUsers = allUsersPage.getContent();
         List<UserDto> allUsersDto = new ArrayList<>();
         for (User user : allUsers) {

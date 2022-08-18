@@ -20,11 +20,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoForOwner> getAllItemsByUserId(long id, Integer from, Integer size) {
         List<Item> allItemsByOwnerId =
-                new ArrayList<>(itemRepository.findItemsByOwnerId(id, PageRequest.of(from/size, size)));
+                new ArrayList<>(itemRepository.findItemsByOwnerId(id, PageRequest.of(from / size, size)));
         List<ItemDtoForOwner> allItemsDtoByOwnerId = new ArrayList<>();
         for (Item item : allItemsByOwnerId) {
             allItemsDtoByOwnerId.add(ItemMapper.toOwnerItemDto(item,
@@ -119,7 +115,7 @@ public class ItemServiceImpl implements ItemService {
         if (request.isBlank()) {
             return resultDto;
         }
-        List<Item> result = itemRepository.searchByNameAndDescriptionAndAvailable(request, PageRequest.of(from/size, size));
+        List<Item> result = itemRepository.searchByNameAndDescriptionAndAvailable(request, PageRequest.of(from / size, size));
         for (Item item : result) {
             resultDto.add(ItemMapper.toItemDto(item));
         }

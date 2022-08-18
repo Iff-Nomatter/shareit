@@ -55,7 +55,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getAllItemRequests(long userId, Integer from, Integer size) {
         List<ItemRequest> allItemRequests =
-                itemRequestRepository.findAll(PageRequest.of(from/size, size))
+                itemRequestRepository.findAll(PageRequest.of(from / size, size))
                         .stream().collect(Collectors.toList());
         allItemRequests.removeIf(itemRequest -> itemRequest.getRequestor().getId() == userId);
         return ItemRequestMapper.itemRequestDtoList(allItemRequests);

@@ -264,33 +264,4 @@ class ItemServiceImplTest {
         commentDto.setText("Comment text");
         assertThrows(ResponseStatusException.class, () -> itemService.postComment(1L, 1L, commentDto));
     }
-
-    @Test
-    void postCommentEmptyText() {
-        User user = new User();
-        user.setId(1);
-        Mockito.when(mockUserRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
-
-        Item item = new Item();
-        item.setId(1);
-        item.setName("name");
-        item.setDescription("description");
-        item.setOwner(user);
-        item.setAvailable(true);
-        Mockito.when(mockItemRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(item));
-
-        Booking booking = new Booking();
-        booking.setId(1);
-        User booker = new User();
-        booker.setId(2);
-        booking.setBooker(booker);
-        Mockito.when(
-                        mockBookingRepository.findBookingsByItemIdAndBookerIdAndStatusAndStartBefore(
-                                Mockito.eq(1L), Mockito.eq(1L), Mockito.any(), Mockito.any()))
-                .thenReturn(Collections.singletonList(booking));
-
-        CommentDto commentDto = new CommentDto();
-        commentDto.setText("");
-        assertThrows(ResponseStatusException.class, () -> itemService.postComment(1L, 1L, commentDto));
-    }
 }
